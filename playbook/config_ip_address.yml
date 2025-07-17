@@ -1,0 +1,25 @@
+---
+- name: Configure IP addresses on DCN devices
+  hosts: switches,routers
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    interface_configs:
+      - device: switch1.example.com
+        interface: GigabitEthernet 0/1
+        ip_address: 192.168.10.1
+        subnet_mask: 255.255.255.0
+      - device: router1.example.com
+        interface: GigabitEthernet 0/0
+        ip_address: 10.0.0.1
+        subnet_mask: 255.255.255.252
+
+  tasks:
+    - name: Configure IP addresses on interfaces
+      dcnos_config:
+        lines:
+          - ip address {{ item.ip_address }} {{ item.subnet_mask }}
+        parents: interface {{ item.interface }}
+      loop: "{{ interface_configs | selectattr('device', 'equalto', inventory_hostname) | list }}"
+      when: inventory_hostname == item.device
