@@ -1,1 +1,23 @@
-
+# inventory/network_devices.yml
+all:
+  children:
+    switches:
+      hosts:
+        switch1.example.com:
+          ansible_host: 192.168.1.1
+          ansible_network_os: dcnos
+          device_type: switch
+          location: "机房A"
+        switch2.example.com:
+          ansible_host: 192.168.1.126
+          ansible_network_os: dcnos
+          device_type: switch
+          location: "机房B"
+    
+    routers:
+      hosts:
+        router1.example.com:
+          ansible_host: 192.168.3.2
+          ansible_network_os: dcnos
+          device_type: router
+          location: "核心机房"
