@@ -1,0 +1,18 @@
+---
+- name: Configure DCN network devices
+  hosts: all
+  gather_facts: no
+  connection: network_cli  # 使用网络设备CLI连接方式
+
+  tasks:
+    - name: Test connectivity to DCN devices
+      ping:
+      
+    - name: Collect device facts
+      dcnos_facts:
+        gather_subset: all
+      register: facts_output
+      
+    - name: Display device information
+      debug:
+        var: facts_output.ansible_facts
