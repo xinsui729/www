@@ -1,0 +1,30 @@
+---
+- name: Configure VLANs on DCN switches
+  hosts: switches
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    vlans:
+      - id: 50
+        name: Management
+      - id: 60
+        name: Staff
+      - id: 70
+        name: Guests
+
+  tasks:
+    - name: Create VLANs
+      dcnos_config:
+        lines:
+          - vlan {{ item.id }}
+          - name {{ item.name }}
+        parents: vlan database
+      loop: "{{ vlans }}"
+      
+    - name: Configure access ports
+      dcnos_config:
+        lines:
+          - switchport mode access
+          - switchport access vlan 10
+        parents: interface Ethernet 1/0/10
